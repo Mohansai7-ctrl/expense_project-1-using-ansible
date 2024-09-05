@@ -4,12 +4,12 @@
   vars:
   tasks:
 
-  - name:
-    ansible.builtin.pip:
-      name:
-      - cryptography
-      - 
-      executable: pip3.9
+  # - name:
+  #   ansible.builtin.pip:
+  #     name:
+  #     - cryptography
+  #     - 
+  #     executable: pip3.9
 
   - name: installing the frontend app nginx
     ansible.builtin.package:
