@@ -8,10 +8,10 @@
 
   tasks:
 
-  - name: installing pymysql package as it required to connect to mysql_db #To connect to mysql server ansible needs python PyMySql packages to be installed.
+  - name: installing PyMySQL package as it required to connect to mysql_db #To connect to mysql server ansible needs python PyMySQL packages to be installed.
     ansible.builtin.pip:
       name:
-      - PyMySql
+      - PyMySQL
       exeutable: pip3.9
 
 
