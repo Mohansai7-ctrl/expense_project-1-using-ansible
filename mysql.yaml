@@ -1,91 +1,91 @@
-# - name: configuring the mysql
-#   hosts: web
-#   become: yes
-
-#   vars:
-#   - login_host: "mysql.mohansai.online"
-#   - login_password: "ExpenseApp@1"
-
-#   tasks:
-
-#   - name: installing PyMySQL package as it required to connect to mysql_db #To connect to mysql server ansible needs python PyMySQL packages to be installed.
-#     ansible.builtin.pip:
-#       name:
-#       - PyMySQL
-   
-#       executable: pip3.9
-
-
-#   - name: installing mysql-server
-#     ansible.builtin.package: 
-#       name: "mysql-server"
-#       state: "present"
-    
-#   - name: starting and enabling the mysql service
-#     ansible.builtin.service:
-#       name: "mysqld"
-#       state: "started"
-#       enabled: yes
-
-
-#   - name: Checking that able to connect to mysql-server or not
-#     community.mysql.mysql_info:
-#       login_user: root
-#       login_password: "{{ login_password }}"
-#       login_host: "{{ login_host }}"
-#     ignore_errors: true    #if unable to connect to mysql-server then it has to ignore the error, then only it can proceed further to set up the password
-#     register: mysql_info
-
-
-#   - name: Printing the output of able to connect to mysql-server or not
-#     ansible.builtin.debug:
-#       msg: "{{ mysql_info }}"
-
-
-
-#   - name: Setting up the password for root of mysql-server
-#     ansible.builtin.command: "mysql_secure_installation --set-root-pass {{ login_password }}"
-#     when: mysql_info.failed is true #here we need to check by "is" instead of " == "
-
-
-
-
-
-- name: mysql configuration
+- name: configuring the mysql
   hosts: mysql
   become: yes
+
   vars:
-    mysql_root_password: ExpenseApp@1
-    login_host: mysql.mohansai.online
+  - login_host: "mysql.mohansai.online"
+  - login_password: "ExpenseApp@1"
+
   tasks:
-  - name: ansible to install pymysql
+
+  - name: installing PyMySQL package as it required to connect to mysql_db #To connect to mysql server ansible needs python PyMySQL packages to be installed.
     ansible.builtin.pip:
       name:
       - PyMySQL
+   
       executable: pip3.9
-  - name: install MySQL Server
-    ansible.builtin.package:
-      name: mysql-server
-      state: present
 
-  - name: start mysql server
+
+  - name: installing mysql-server
+    ansible.builtin.package: 
+      name: "mysql-server"
+      state: "present"
+    
+  - name: starting and enabling the mysql service
     ansible.builtin.service:
-      name: mysqld
-      state: started
+      name: "mysqld"
+      state: "started"
       enabled: yes
 
-  - name: connect mysql server
+
+  - name: Checking that able to connect to mysql-server or not
     community.mysql.mysql_info:
       login_user: root
-      login_password: "{{ mysql_root_password }}"
+      login_password: "{{ login_password }}"
       login_host: "{{ login_host }}"
-    ignore_errors: true
+    ignore_errors: true    #if unable to connect to mysql-server then it has to ignore the error, then only it can proceed further to set up the password
     register: mysql_info
 
-  - name: print mysql info
+
+  - name: Printing the output of able to connect to mysql-server or not
     ansible.builtin.debug:
       msg: "{{ mysql_info }}"
 
-  - name: setup MySQL root password
-    ansible.builtin.command: "mysql_secure_installation --set-root-pass {{ mysql_root_password }}"
-    when: mysql_info.failed is true
+
+
+  - name: Setting up the password for root of mysql-server
+    ansible.builtin.command: "mysql_secure_installation --set-root-pass {{ login_password }}"
+    when: mysql_info.failed is true #here we need to check by "is" instead of " == "
+
+
+
+
+
+# - name: mysql configuration
+#   hosts: mysql
+#   become: yes
+#   vars:
+#     mysql_root_password: ExpenseApp@1
+#     login_host: mysql.mohansai.online
+#   tasks:
+#   - name: ansible to install pymysql
+#     ansible.builtin.pip:
+#       name:
+#       - PyMySQL
+#       executable: pip3.9
+#   - name: install MySQL Server
+#     ansible.builtin.package:
+#       name: mysql-server
+#       state: present
+
+#   - name: start mysql server
+#     ansible.builtin.service:
+#       name: mysqld
+#       state: started
+#       enabled: yes
+
+#   - name: connect mysql server
+#     community.mysql.mysql_info:
+#       login_user: root
+#       login_password: "{{ mysql_root_password }}"
+#       login_host: "{{ login_host }}"
+#     ignore_errors: true
+#     register: mysql_info
+
+#   - name: print mysql info
+#     ansible.builtin.debug:
+#       msg: "{{ mysql_info }}"
+
+#   - name: setup MySQL root password
+#     ansible.builtin.command: "mysql_secure_installation --set-root-pass {{ mysql_root_password }}"
+#     when: mysql_info.failed is true
