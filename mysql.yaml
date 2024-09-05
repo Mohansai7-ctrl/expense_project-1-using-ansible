@@ -39,3 +39,9 @@
   - name: Printing the output of able to connect to mysql-server or not
     ansible.builtin.debug:
       msg: "{{ mysql_info }}"
+
+
+
+  - name: Setting up the password for root of mysql-server
+    ansible.builtin.command: mysql_secure_installation -h --set-root-pass {{ login_password }}
+    when: mysql_info.failed == true
