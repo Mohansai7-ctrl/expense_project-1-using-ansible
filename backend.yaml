@@ -1,0 +1,77 @@
+- name: configuring the backend server
+  hosts: backend
+  become: yes
+  vars:
+  - login_password: ExpenseApp@1
+  - login_host: mysql.mohansai.online
+
+  tasks:
+
+  - name: Downloading the packages
+    ansible.builtin.pip:
+      name:
+      - PyMySQL
+
+  - name: disalbe the nodejs of default versions
+    ansible.builtin.command: dnf module disable nodejs -y
+
+  - name: enable the nodejs of version 20
+    ansible.builtin.command: dnf module enable nodejs:20 -y
+
+  - name: Installing the nodejs application
+    ansible.builtin.package:
+      name: "{{ item }}"
+      state: present
+    loop:
+    - nodejs
+    - mysql
+    
+  - name: checking user created or not
+    ansbile.builtin.user:
+      name: expense
+
+      
+  - name: creating app directory
+    ansible.builtin.file:
+      path: /app
+      state: directory
+
+  - name: Downloading the code in zip format
+    ansible.builtin.get_url:
+      url: https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
+      dest: /tmp/backend.zip
+
+  - name: zipping or unarchival
+    ansible.builtin.unarchival:
+      src: /tmp/backend.zip
+      dest: /app
+      remote_src: yes
+
+  - name: install the dependicies by installing the build tool which is npm
+    ansible.builtin.command: npm install
+      args:
+        chdir: /app
+
+
+  - name: creating and then copying the backend service
+    ansible.builtin.copy:
+      src: backend.service
+      dest: /etc/systemd/system/backend.service
+
+
+  - name: importing the schema/database in mysql_db
+    community.mysql.mysql_db:
+      login_user: root
+      login_password: "{{ login_password }}"
+      login_host: "{{ login_host }}"
+      targer: /app/schema/backend.sql
+      state: import  #here it acts ad idempotent but it has to import the schema, means it will dump everytime when you runs the script
+      name: all
+
+
+  - name: reloading and restarting the daemon service
+    ansible.builtin.systemd_service:
+      daemon-reload: true
+      name: backend
+      state: restarted
+
