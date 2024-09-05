@@ -35,7 +35,7 @@
     amazon.aws.route53: #ansible route53 module
       state: "present"
       zone: "{{ zone }}"
-      value: "{{ item.intances[0].private_ip_address }}"
+      value: "{{ item.instances[0].private_ip_address }}"
       record: "{{ item.item }}.{{ zone }}"
       type: A
       ttl: 1
