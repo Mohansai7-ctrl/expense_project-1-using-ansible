@@ -64,7 +64,7 @@
       login_user: root
       login_password: "{{ login_password }}"
       login_host: "{{ login_host }}"
-      targer: /app/schema/backend.sql
+      target: /app/schema/backend.sql
       state: import  #here it acts ad idempotent but it has to import the schema, means it will dump everytime when you runs the script
       name: all
 
