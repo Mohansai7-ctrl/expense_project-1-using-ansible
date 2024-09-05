@@ -1,6 +1,11 @@
 - name: configuring the mysql
   hosts: web
   become: yes
+
+  vars:
+  - login_host: "mysql.mohansai.online"
+  - login_password: "ExpenseApp@1"
+
   tasks:
   - name: installing mysql-server
     ansible.builtin.package: 
@@ -12,3 +17,17 @@
       name: "mysqld"
       state: "started"
       enabled: yes
+
+
+  - name: Checking that able to connect to mysql-server or not
+    community.mysql.mysql_info:
+      login_user: root
+      login_password: "{{ login_password }}"
+      login_host: "{{ login_host }}"
+    ignore_erros: true
+    register: mysql_info
+
+
+  - name: Printing the output of able to connect to mysql-server or not
+    ansible.builtin.debug:
+      msg: "{{ mysql_info }}"
