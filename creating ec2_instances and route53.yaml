@@ -46,7 +46,7 @@
 
   - name: Generating the public ip address of frontend server
     amazon.aws.route53:
-      state: "{{ present }}"
+      state: "present"
       zone: "{{ zone }}"
       record: "{{ zone }}"
       value: "{{ item.instances[0].public_ip_address }}"
