@@ -1,5 +1,5 @@
 subnet_id: "subnet-019982f065ed767dd"
-sg_ig: "sg-0d91387712ba38962"
+sg_id: "sg-0d91387712ba38962"
 ami_id: "ami-09c813fb71547fc4f"
 zone: "mohansai.online"
 instances:
