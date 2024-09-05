@@ -27,7 +27,7 @@
     - mysql
     
   - name: checking user created or not
-    ansbile.builtin.user:
+    ansible.builtin.user:
       name: expense
 
       
