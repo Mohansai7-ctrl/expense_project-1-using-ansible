@@ -1,6 +1,6 @@
 - name: creating ec2_instances and route53
   hosts: local
-  connections: local
+  connection: local
 
   vars_files:
   - vars.yaml
@@ -23,12 +23,13 @@
       security_group: "{{ sg_id }}"
       image_id: "{{ ami_id }}"
     loop: "{{ instances }}"
+    register: ec2_instnaces
     
 
   - name: getting the output of ec2_instances creation
     ansible.builtin.debug: #ansible debug module
       msg: "{{ ec2_instances }}"
-    register: ec2_instnaces
+    
   
   - name: Generating the private ip route53 records
     amazon.aws.route53: #ansible route53 module
