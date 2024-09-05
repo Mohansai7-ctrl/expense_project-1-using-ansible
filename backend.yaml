@@ -42,7 +42,7 @@
       dest: /tmp/backend.zip
 
   - name: zipping or unarchival
-    ansible.builtin.unarchival:
+    ansible.builtin.unarchive:
       src: /tmp/backend.zip
       dest: /app
       remote_src: yes
