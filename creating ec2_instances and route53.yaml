@@ -1,0 +1,58 @@
+- name: creating ec2_instances and route53
+  hosts: local
+  connections: local
+
+  vars_files:
+  - vars.yaml
+    
+  tasks:
+
+  - name: Installing python required boto3 and botcore packages #To create any instances by ansible, in background python requires boto3 and botocore packages to be installed.
+    ansible.builtin.pip: #ansible pip module
+      name:
+      - boto3
+      - botocore
+      executable: pip3.9
+
+
+  - name: creating ec2_instances
+    amazon.aws.ec2_instance: #ansible ec2_instance module
+      name: "{{ item }}"
+      instance_type: "t3.micro"
+      vpc_subnet_id: "{{ subnet_id }}"
+      security_group: "{{ sg_id }}"
+      image_id: "{{ ami_id }}"
+    loop: "{{ instances }}"
+    
+
+  - name: getting the output of ec2_instances creation
+    ansible.builtin.debug: #ansible debug module
+      msg: "{{ ec2_instances }}"
+    register: ec2_instnaces
+  
+  - name: Generating the private ip route53 records
+    amazon.aws.route53: #ansible route53 module
+      state: "present"
+      zone: "{{ zone }}"
+      value: "{{ item.intances[0].private_ip_address }}"
+      record: "{{ item.item }}.{{ zone }}"
+      type: A
+      ttl: 1
+      wait: true
+      overwrite: true
+      loop: "{{ ec2_instances.results }}"
+
+
+  - name: Generating the public ip address of frontend server
+    amazon.aws.route53:
+      state: "{{ present }}"
+      zone: "{{ zone }}"
+      record: "{{ zone }}"
+      value: "{{ item.instances[0].public_ip_address }}"
+      type: A
+      ttl: 1
+      wait: true
+      overwrite: true
+    loop: "{{ ec2_instances.results }}"
+    when: item.item == "frontend"
+
