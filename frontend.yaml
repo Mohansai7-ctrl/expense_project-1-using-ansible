@@ -1,0 +1,48 @@
+- name: configuring the frontend server
+  hosts: frontend
+  become: yes
+  vars:
+  tasks:
+
+  - name:
+    ansible.builtin.pip:
+      name:
+      - cryptography
+      - 
+      executable: pip3.9
+
+  - name: installing the frontend app nginx
+    ansible.builtin.package:
+      name: nginx
+      state: installed
+
+  - name: starting and enabling the nginx
+    ansible.builtin.service:
+      name: nginx
+      state: started
+      enabled: yes
+
+  - name: downloading the frontend code by zipping
+    ansible.builtin.get_url:
+      url: https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
+      path: /tmp/frontend.zip
+
+
+  - name: unzipping into html
+    ansible.builtin.unarchive:
+      src: /tmp/frontend.zip
+      dest: /usr/share/nginx/html
+      remote_src: yes
+
+
+  - name: nginx configuration in expense.conf
+    ansible.builtin.copy:
+      src: expense.conf
+      dest: /etc/nginx/default.d/expense.conf
+
+
+  - name: restarting the nginx
+    ansible.builtin.service:
+      name: nginx
+      state: restarted
+      
